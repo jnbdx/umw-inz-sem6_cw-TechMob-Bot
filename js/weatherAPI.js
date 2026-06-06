@@ -1,8 +1,5 @@
 // Weather API Module
-
-// Optional: You can place your OpenWeather API key here.
-// If empty, the app will use realistic mock weather data for testing.
-const API_KEY = ""; 
+import { getApiKey } from './storage.js';
 
 /**
  * Fetches current weather for a given city from OpenWeatherMap or falls back to realistic mock data.
@@ -11,11 +8,12 @@ const API_KEY = "";
  */
 export async function fetchWeather(city) {
     const formattedCity = city.trim();
+    const apiKey = getApiKey();
     
     // Check if we have an API key configured
-    if (API_KEY && API_KEY !== "YOUR_API_KEY_HERE") {
+    if (apiKey) {
         try {
-            const apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(formattedCity)}&appid=${API_KEY}&units=metric&lang=pl`;
+            const apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(formattedCity)}&appid=${apiKey}&units=metric&lang=pl`;
             const response = await fetch(apiURL);
             
             if (!response.ok) {
