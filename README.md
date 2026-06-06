@@ -306,5 +306,26 @@ Cały projekt był realizowany z podziałem na gałęzie funkcjonalne (feature b
 
 Wszystkie gałęzie oraz główny branch `main` zostały wypchnięte na serwer GitHub.
 
+## 3. Prezentacja działania i zrzuty ekranu (Lokalne Testy)
+
+Aby udokumentować poprawne działanie chatbota, uruchomiłem lokalny serwer testowy i przeprowadziłem automatyczną sesję testową z użyciem przeglądarki w trybie bezgłowym (headless). Wszystkie zrzuty ekranu oraz szczegółowy opis przepływu danych (flow) umieściłem w dedykowanym katalogu `pokaz_dzialania/`.
+
+Poniżej przedstawiam podsumowanie zrzutów ekranu obrazujących kluczowe stany aplikacji:
+
+### 3.1. Ekran powitalny (`pokaz_dzialania/welcome.png`)
+Pokazuje stan czatu tuż po wejściu na stronę (czysty stan LocalStorage). Bot wyświetla komunikat powitalny i sugeruje szybkie tagi pogodowe na dole okna.
+
+### 3.2. Wyszukiwanie pogody w mieście (`pokaz_dzialania/city_search.png`)
+Prezentuje sytuację, w której wpisałem nazwę miasta "Bydgoszcz". Aplikacja odpytuje moduł API (symulacja danych), po czym dobiera optymalną rekomendację stroju (kurtka z membraną, parasolka, buty trekkingowe) na temperaturę 7°C i deszcz.
+
+### 3.3. Analiza wpisu użytkownika (`pokaz_dzialania/weather_description.png`)
+Przedstawia analizę ręcznego opisu pogody: *"Jest 7 stopni i pada deszcz"*. Parser RegEx poprawnie wyciąga temperaturę i flagę opadów, a chatbot generuje precyzyjną odpowiedź ubraniową.
+
+### 3.4. Motyw ciemny (`pokaz_dzialania/dark_mode.png`)
+Pokazuje działanie Dark Mode oraz zachowanie interfejsu przy zapytaniu o ciepłą, letnią pogodę (*"Słonecznie i 25 stopni"*). Ustawienie motywu jest trwale zapamiętywane w pamięci przeglądarki.
+
+Szczegółowy diagram przepływu danych i techniczny opis architektury flow znajduje się bezpośrednio w pliku [pokaz_dzialania/flow_aplikacji.md](pokaz_dzialania/flow_aplikacji.md).
+
+
 
 
