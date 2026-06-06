@@ -16,8 +16,32 @@
     <div class="bg-blob blob-2" aria-hidden="true"></div>
 
     <main class="app-container">
+        <!-- Login Card with Glassmorphism -->
+        <section id="login-container" class="login-card" aria-label="Logowanie użytkownika">
+            <header class="login-header">
+                <div class="login-logo" role="img" aria-label="AuraStyle Logo">☀️</div>
+                <h2>AuraStyle AI</h2>
+                <p>Wprowadź dane logowania, aby kontynuować</p>
+            </header>
+            <div class="login-body">
+                <div id="login-error" class="login-error-msg hidden" role="alert"></div>
+                <div class="input-field">
+                    <label for="username-input">Użytkownik</label>
+                    <input type="text" id="username-input" placeholder="Nazwa użytkownika..." autocomplete="username">
+                </div>
+                <div class="input-field">
+                    <label for="password-input">Hasło</label>
+                    <input type="password" id="password-input" placeholder="Hasło..." autocomplete="current-password">
+                </div>
+                <button id="login-btn" class="login-submit-btn">Zaloguj się</button>
+                <div class="login-hint">
+                    <span>Konto testowe: <strong>admin</strong> / <strong>admin123</strong></span>
+                </div>
+            </div>
+        </section>
+
         <!-- Main Chat Box with Glassmorphism -->
-        <section class="chat-container" aria-label="Asystent pogodowy czat">
+        <section id="chat-container" class="chat-container hidden" aria-label="Asystent pogodowy czat">
             
             <!-- Header -->
             <header class="chat-header">
@@ -28,9 +52,18 @@
                         <span class="bot-status">Online • Doradca pogodowy</span>
                     </div>
                 </div>
-                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Przełącz motyw (Jasny/Ciemny)" title="Przełącz motyw">
-                    <span class="toggle-icon">🌙</span>
-                </button>
+                <div class="header-controls">
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Przełącz motyw (Jasny/Ciemny)" title="Przełącz motyw">
+                        <span class="toggle-icon">🌙</span>
+                    </button>
+                    <button id="logout-btn" class="logout-btn" aria-label="Wyloguj się" title="Wyloguj się">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
             </header>
 
             <!-- Chat box where messages go -->

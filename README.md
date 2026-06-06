@@ -359,3 +359,15 @@ W celu nadania aplikacji wyjątkowego, nowoczesnego wyglądu zaimplementowałem 
 - **Dymki w stylu Apple iMessage**: Dymki wiadomości użytkownika otrzymały Apple Blue gradient (`#007aff` -> `#5856d6`) z zaokrąglonymi rogami i lekkim cieniem. Dymki bota to z kolei czyste, szklane bąbelki o wyższym kontraście, które idealnie pasują zarówno do trybu jasnego, jak i ciemnego.
 - **Widgety i elementy formularzy**: Informacje o pogodzie (np. po wyszukaniu miasta) są teraz prezentowane jako elegancki, zaokrąglony widget pogodowy iOS (`border-radius: 16px;`), a pasek wprowadzania wiadomości przyjął formę gładkiej, zaokrąglonej kapsuły z okrągłym przyciskiem wysyłania.
 
+## 6. Uwierzytelnianie użytkownika (Ekran Logowania)
+
+W celu ograniczenia dostępu do bota i dodania podstawowej kontroli dostępu, zaimplementowałem prosty ekran logowania zintegrowany z interfejsem czatu:
+- **Szklana karta logowania (Login Card)**: Ekran logowania jest w pełni spójny z resztą interfejsu i zrealizowany w stylu iOS Glassmorphism.
+- **Uwierzytelnianie po stronie klienta (SPA)**: Logowanie odbywa się asynchronicznie. Przy udanej weryfikacji stan sesji jest zapisywany w `LocalStorage` jako `is_logged_in: true`, a widok logowania płynnie przełącza się na okno czatu bez przeładowywania strony.
+- **Konto testowe**: Bezpośrednio pod formularzem umieściłem czytelną informację z danymi testowymi dla szybkiej weryfikacji:
+  * Użytkownik: **admin**
+  * Hasło: **admin123**
+- **Przycisk wylogowania (Logout)**: W nagłówku czatu dodałem ikonę wylogowania, która czyści sesję w pamięci przeglądarki i błyskawicznie cofa użytkownika do ekranu logowania.
+- **Bypass dla trybu demo/testowego**: Zmodyfikowałem plik `main.js`, aby przy testach automatycznych (uruchamianych z parametrem query `?demo=...`) użytkownik był logowany automatycznie. Pozwala to na poprawne działanie istniejących skryptów generujących zrzuty ekranu bez blokowania na ekranie autoryzacji.
+
+

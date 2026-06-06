@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     if (demoMode) {
         localStorage.clear();
+        localStorage.setItem('is_logged_in', 'true');
     }
     
     // Now initialize chat with clean storage

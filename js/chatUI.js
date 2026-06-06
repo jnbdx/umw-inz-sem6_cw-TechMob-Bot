@@ -10,6 +10,13 @@ let sendBtn;
 let themeToggleBtn;
 let typingIndicator;
 let quickTags;
+let loginContainer;
+let chatContainer;
+let usernameInput;
+let passwordInput;
+let loginBtn;
+let loginError;
+let logoutBtn;
 
 // State
 let messageHistory = [];
@@ -25,12 +32,29 @@ export function initChat() {
     themeToggleBtn = document.getElementById('theme-toggle');
     typingIndicator = document.getElementById('typing-indicator');
     quickTags = document.querySelectorAll('.quick-tag-btn');
+    loginContainer = document.getElementById('login-container');
+    chatContainer = document.getElementById('chat-container');
+    usernameInput = document.getElementById('username-input');
+    passwordInput = document.getElementById('password-input');
+    loginBtn = document.getElementById('login-btn');
+    loginError = document.getElementById('login-error');
+    logoutBtn = document.getElementById('logout-btn');
+
     // Bind Event Listeners
     sendBtn.addEventListener('click', handleUserSend);
     userInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') handleUserSend();
     });
     themeToggleBtn.addEventListener('click', toggleTheme);
+    loginBtn.addEventListener('click', handleLogin);
+    logoutBtn.addEventListener('click', handleLogout);
+    
+    usernameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleLogin();
+    });
+    passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleLogin();
+    });
 
     // Bind Quick Tags
     quickTags.forEach(btn => {
@@ -48,6 +72,14 @@ export function initChat() {
     } else {
         document.body.classList.remove('dark');
         themeToggleBtn.querySelector('.toggle-icon').textContent = '🌙';
+    }
+
+    // Check Login Session
+    const isLoggedIn = localStorage.getItem('is_logged_in') === 'true';
+    if (isLoggedIn) {
+        showChatView();
+    } else {
+        showLoginView();
     }
 
     // Load and Render History
@@ -73,6 +105,40 @@ function toggleTheme() {
     const isDark = document.body.classList.toggle('dark');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     themeToggleBtn.querySelector('.toggle-icon').textContent = isDark ? '☀️' : '🌙';
+}
+
+function showChatView() {
+    loginContainer.classList.add('hidden');
+    chatContainer.classList.remove('hidden');
+    userInput.focus();
+}
+
+function showLoginView() {
+    chatContainer.classList.add('hidden');
+    loginContainer.classList.remove('hidden');
+    usernameInput.value = '';
+    passwordInput.value = '';
+    loginError.classList.add('hidden');
+    usernameInput.focus();
+}
+
+function handleLogin() {
+    const user = usernameInput.value.trim();
+    const pass = passwordInput.value;
+    
+    if (user === 'admin' && pass === 'admin123') {
+        localStorage.setItem('is_logged_in', 'true');
+        loginError.classList.add('hidden');
+        showChatView();
+    } else {
+        loginError.textContent = "Błędny login lub hasło";
+        loginError.classList.remove('hidden');
+    }
+}
+
+function handleLogout() {
+    localStorage.removeItem('is_logged_in');
+    showLoginView();
 }
 
 
