@@ -9,6 +9,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (demoMode) {
         localStorage.clear();
         localStorage.setItem('is_logged_in', 'true');
+        
+        // Inject style to disable animations and blurs for sharp headless screenshots
+        const style = document.createElement('style');
+        style.textContent = `
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+            .blob {
+                display: none !important;
+            }
+            .chat-card, .login-card {
+                backdrop-filter: none !important;
+                background: rgba(255, 255, 255, 0.95) !important;
+                border: 1px solid rgba(0, 0, 0, 0.15) !important;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+            }
+            body.dark .chat-card, body.dark .login-card {
+                background: rgba(28, 28, 30, 0.95) !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+            }
+            .windmill-container, .birds-container {
+                display: none !important;
+            }
+        `;
+        document.head.appendChild(style);
     }
     
     // Now initialize chat with clean storage
