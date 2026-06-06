@@ -141,13 +141,21 @@ async function handleUserSend() {
         let botText = "";
         
         // Smart query parsing: is it a city query?
-        // Patterns: exactly 1-2 words (without numbers) or "pogoda [miasto]"
-        const cleanText = text.replace(/pogoda\s+/i, '').trim();
+        // Strip common prepositions and time words to isolate the city name
+        let cleanText = text
+            .replace(/^pogoda\s+(?:w\s+|we\s+)?/i, '')
+            .replace(/^(?:w\s+|we\s+|dzisiaj\s+|jutro\s+|teraz\s+)/i, '')
+            .replace(/(?:\s+dzisiaj|\s+jutro|\s+teraz)$/i, '')
+            .trim();
+            
         const words = cleanText.split(/\s+/);
         const hasNumbers = /\d/.test(text);
         
-        // If it looks like a city query (e.g. no numbers, fewer than 3 words)
-        if (!hasNumbers && words.length <= 2 && !/stopn|deszc|wiatr|słoń|śnieg/i.test(text)) {
+        // Define if the user is describing weather instead of querying a city
+        const isWeatherDescription = /stopn|deszc|wiatr|słoń|śnieg|zimn|ciepł|gorąc|chłod|mróz|pada|wichur|upał/i.test(text);
+        
+        // If it looks like a city query (no numbers, up to 4 words, not describing weather, and has min length)
+        if (!hasNumbers && words.length <= 4 && !isWeatherDescription && cleanText.length > 2) {
             const weather = await fetchWeather(cleanText);
             if (weather && weather.success) {
                 // If weather fetched, use recommender on the structured result

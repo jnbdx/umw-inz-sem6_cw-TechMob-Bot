@@ -53,37 +53,51 @@ export async function fetchWeather(city) {
     }
 }
 
-/**
- * Generates realistic weather mock data based on city name.
- * @param {string} city 
- * @returns {object} Mock weather
- */
 function getMockWeather(city) {
-    const cleaned = city.toLowerCase().trim();
-    
-    // Pre-defined weather for popular Polish cities for consistent testing
-    const cityDatabase = {
-        warszawa: { temp: 18, desc: "częściowe zachmurzenie", rain: false, snow: false, wind: false, sun: true },
-        bydgoszcz: { temp: 7, desc: "lekki deszcz ze słońcem", rain: true, snow: false, wind: true, sun: false },
-        gdańsk: { temp: 12, desc: "silny wiatr od morza i mżawka", rain: true, snow: false, wind: true, sun: false },
-        kraków: { temp: 22, desc: "bezchmurnie i słonecznie", rain: false, snow: false, wind: false, sun: true },
-        wrocław: { temp: 25, desc: "upał i słońce", rain: false, snow: false, wind: false, sun: true },
-        zakopane: { temp: -2, desc: "intensywne opady śniegu", rain: false, snow: true, wind: false, sun: false }
+    // Helper to normalize Polish diacritics to plain English characters
+    const normalizeString = (str) => {
+        return str.toLowerCase().trim()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/ł/g, "l")
+            .replace(/ó/g, "o")
+            .replace(/ę/g, "e")
+            .replace(/ą/g, "a")
+            .replace(/ś/g, "s")
+            .replace(/ł/g, "l")
+            .replace(/ż/g, "z")
+            .replace(/ź/g, "z")
+            .replace(/ć/g, "c")
+            .replace(/ń/g, "n");
     };
     
-    if (cityDatabase[cleaned]) {
-        const info = cityDatabase[cleaned];
+    const cleaned = normalizeString(city);
+    
+    // Pre-defined weather with normalized keys for robust matching (e.g. gdansk, krakow)
+    const cityDatabase = [
+        { pattern: "warszaw", name: "Warszawa", temp: 18, desc: "częściowe zachmurzenie", rain: false, snow: false, wind: false, sun: true },
+        { pattern: "bydgoszcz", name: "Bydgoszcz", temp: 7, desc: "lekki deszcz ze słońcem", rain: true, snow: false, wind: true, sun: false },
+        { pattern: "gdansk", name: "Gdańsk", temp: 12, desc: "silny wiatr od morza i mżawka", rain: true, snow: false, wind: true, sun: false },
+        { pattern: "krakow", name: "Kraków", temp: 22, desc: "bezchmurnie i słonecznie", rain: false, snow: false, wind: false, sun: true },
+        { pattern: "wroclaw", name: "Wrocław", temp: 25, desc: "upał i słońce", rain: false, snow: false, wind: false, sun: true },
+        { pattern: "zakopan", name: "Zakopane", temp: -2, desc: "intensywne opady śniegu", rain: false, snow: true, wind: false, sun: false }
+    ];
+    
+    // Check if input matches or contains any of the pattern keys
+    const match = cityDatabase.find(item => cleaned.includes(item.pattern));
+    
+    if (match) {
         return {
             success: true,
             source: "AuraStyle Database (Mock)",
-            city: city.charAt(0).toUpperCase() + city.slice(1),
-            temperature: info.temp,
-            description: info.desc,
+            city: match.name,
+            temperature: match.temp,
+            description: match.desc,
             conditions: {
-                rain: info.rain,
-                snow: info.snow,
-                wind: info.wind,
-                sun: info.sun
+                rain: match.rain,
+                snow: match.snow,
+                wind: match.wind,
+                sun: match.sun
             }
         };
     }
