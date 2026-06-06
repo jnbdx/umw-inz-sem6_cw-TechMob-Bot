@@ -3,20 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather AI Assistant</title>
+    <title>Weather AI Assistant - Twój Doradca Ubiory</title>
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            Weather AI Assistant
-        </div>
-        <div id="chat-box"></div>
-        <div class="chat-input">
-            <input type="text" id="user-input" placeholder="Wpisz pogodę...">
-            <button id="send-btn">Send</button>
-        </div>
-    </div>
+    <main class="app-container">
+        <!-- Main Chat Box with Glassmorphism -->
+        <section class="chat-container" aria-label="Asystent pogodowy czat">
+            
+            <!-- Header -->
+            <header class="chat-header">
+                <div class="bot-info">
+                    <div class="bot-avatar" role="img" aria-label="Bot Avatar">☀️</div>
+                    <div class="bot-details">
+                        <h1>AuraStyle AI</h1>
+                        <span class="bot-status">Online • Doradca pogodowy</span>
+                    </div>
+                </div>
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Przełącz motyw (Jasny/Ciemny)" title="Przełącz motyw">
+                    <span class="toggle-icon">🌙</span>
+                </button>
+            </header>
+
+            <!-- Chat box where messages go -->
+            <div id="chat-box" class="chat-messages" role="log" aria-live="polite" aria-label="Historia konwersacji">
+                <!-- Messages will be injected dynamically -->
+            </div>
+
+            <!-- Typing indicator -->
+            <div id="typing-indicator" class="typing-indicator-container hidden" aria-hidden="true">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+
+            <!-- Input area -->
+            <footer class="chat-input-area">
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="user-input" 
+                        placeholder="Wpisz np. 'Jest 7 stopni i pada deszcz' lub miasto..." 
+                        aria-label="Wpisz opis pogody lub miasto" 
+                        autocomplete="off"
+                    >
+                    <button id="send-btn" aria-label="Wyślij wiadomość" title="Wyślij">
+                        <svg viewBox="0 0 24 24" width="24" height="24" class="send-icon" aria-hidden="true">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="quick-tags">
+                    <button class="quick-tag-btn" data-text="Jest 5 stopni i wieje silny wiatr">💨 5°C & Wiatr</button>
+                    <button class="quick-tag-btn" data-text="Pada ulewny deszcz, 12 stopni">🌧️ Ulewa & 12°C</button>
+                    <button class="quick-tag-btn" data-text="Słonecznie i 25 stopni">☀️ Słońce & 25°C</button>
+                </div>
+            </footer>
+
+        </section>
+    </main>
     <script type="module" src="main.js"></script>
 </body>
 </html>
