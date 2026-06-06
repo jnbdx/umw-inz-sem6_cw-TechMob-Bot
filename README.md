@@ -274,4 +274,37 @@ Brakujące a wymagane jest założenie osobnego tenanta Azure - skorzystam z ucz
 
 Dedykuję katalog /notes w repozytorium do własnych notatek, działania ogólnego itd.
 
+## 2. Realizacja etapów i opis wdrożonej architektury
+
+W ramach realizacji projektu zaimplementowałem pełną architekturę modułową (zgodną z ES6) oraz stworzyłem nowoczesny interfejs użytkownika z zachowaniem zasad dostępności WCAG. Poniżej opisuję poszczególne etapy i komponenty, które wdrożyłem w aplikacji:
+
+### 2.1. Podział na moduły (Clean Code)
+Aplikacja została podzielona na logiczne moduły JS, co pozwala uniknąć monolitycznego kodu i ułatwia rozwój:
+- `main.js` – Punkt wejścia aplikacji, uruchamiający inicjalizację po pełnym załadowaniu struktury DOM.
+- `js/chatUI.js` – Odpowiada za obsługę interfejsu (wysyłanie wiadomości, animację pisania bota `typing...`, automatyczny scroll na dół oraz dynamiczny przełącznik trybu Dark Mode).
+- `js/Recommender.js` – Silnik rekomendacyjny. Za pomocą wyrażeń regularnych (RegEx) parsuje tekst użytkownika w poszukiwaniu temperatury i warunków pogodowych (deszcz, wiatr, śnieg, słońce). Na tej podstawie generuje precyzyjną, sformatowaną rekomendację stroju i stylu.
+- `js/weatherAPI.js` – Moduł asynchroniczny (Fetch API / async/await) pobierający aktualne dane pogodowe. Wdrożyłem mechanizm dynamicznego fallbacku: przy braku klucza API, system realistycznie symuluje pogodę dla miast (np. Warszawa, Bydgoszcz, Gdańsk, Zakopane), dzięki czemu aplikacja jest w pełni interaktywna nawet w trybie offline.
+- `js/storage.js` – Obsługa trwałego zapisu historii czatu w `LocalStorage`.
+
+### 2.2. Interfejs UI/UX (Glassmorphism)
+Zaprojektowałem nowoczesny wygląd czatu:
+- Zastosowałem stylizację **Glassmorphism** (`backdrop-filter` z rozmyciem tła i półprzezroczystymi ramkami).
+- Wdrożyłem pełną responsywność (RWD) – na desktopie czat prezentuje się jako elegancka, wyśrodkowana karta, a na urządzeniach mobilnych rozciąga się na pełny ekran.
+- Dodałem zestaw szybkich tagów (sugestii pogodowych), które pozwalają przetestować bota jednym kliknięciem.
+- Wdrożyłem obsługę motywów (Dark/Light Mode) zapamiętywaną w pamięci przeglądarki.
+
+### 2.3. Dostępność (WCAG) i standardy HTML5
+- Struktura dokumentu bazuje na semantycznych tagach (`<main>`, `<section>`, `<header>`, `<footer>`).
+- Zastosowałem odpowiednie atrybuty dostępności cyfrowej (`aria-label`, `aria-live="polite"` dla dynamicznie dodawanych wiadomości czatu oraz `aria-hidden` dla wskaźników dekoracyjnych).
+
+### 2.4. Przebieg prac w systemie Git
+Cały projekt był realizowany z podziałem na gałęzie funkcjonalne (feature branches), a commity były wykonywane zgodnie ze standardami (np. `feat: ...`, `chore: ...`):
+1. `chore: add .gitignore` – przygotowanie plików ignorowanych.
+2. `feat: setup modular architecture framework` – szkielet i puste moduły JS.
+3. `feat: implement responsive layout and modern glassmorphism design` – wdrożenie stylów i struktury HTML.
+4. `feat: implement chatbot intelligence, storage and API integration` – integracja logiki JS, LocalStorage i OpenWeather API.
+
+Wszystkie gałęzie oraz główny branch `main` zostały wypchnięte na serwer GitHub.
+
+
 
