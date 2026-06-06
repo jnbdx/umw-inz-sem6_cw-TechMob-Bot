@@ -41,6 +41,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             userInput.value = "Słonecznie i 25 stopni";
             await new Promise(r => setTimeout(r, 100));
             sendBtn.click();
+        } else if (demoMode === 'warszawa') {
+            userInput.value = "Warszawa";
+            await new Promise(r => setTimeout(r, 100));
+            sendBtn.click();
+        } else if (demoMode === 'gdansk') {
+            userInput.value = "Gdańsk";
+            await new Promise(r => setTimeout(r, 100));
+            sendBtn.click();
+        } else if (demoMode === 'zakopane') {
+            userInput.value = "Zakopane";
+            await new Promise(r => setTimeout(r, 100));
+            sendBtn.click();
         }
     }
 });
