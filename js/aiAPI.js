@@ -1,6 +1,12 @@
 // AI Chatbot API Module using free, keyless Pollinations AI text model
 
 export async function askAI(conversationHistory) {
+    // In demo mode, return the mock follow-up instantly for speed and reliability
+    const isDemo = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('demo');
+    if (isDemo) {
+        return "Możesz także rozważyć zabranie ze sobą okularów przeciwsłonecznych na wypadek nagłego przejaśnienia. Co sądzisz o takim zestawie, czy chciałbyś dobrać jakieś inne dodatki?";
+    }
+    
     try {
         // Format messages array for the AI API
         // conversationHistory is an array of { text, sender }

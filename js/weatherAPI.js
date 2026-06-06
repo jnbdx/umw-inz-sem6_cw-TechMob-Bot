@@ -3,6 +3,12 @@
 export async function fetchWeather(city) {
     const formattedCity = city.trim();
     
+    // In demo mode, return mock weather instantly for speed and reliability
+    const isDemo = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('demo');
+    if (isDemo) {
+        return getMockWeather(formattedCity);
+    }
+    
     // 1. Dynamically fetch from Open-Meteo (FREE, NO KEY REQUIRED!)
     try {
         // Step A: Geocoding (resolves City Name to Coordinates)
