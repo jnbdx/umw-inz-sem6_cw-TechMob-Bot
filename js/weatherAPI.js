@@ -49,7 +49,8 @@ export async function fetchWeather(city) {
         }
     } else {
         // No API key configured - simulate network request and return mock weather
-        await new Promise(resolve => setTimeout(resolve, 800)); // Simulate loading delay
+        const isDemo = new URLSearchParams(window.location.search).has('demo');
+        await new Promise(resolve => setTimeout(resolve, isDemo ? 0 : 800)); // Simulate loading delay
         return getMockWeather(formattedCity);
     }
 }

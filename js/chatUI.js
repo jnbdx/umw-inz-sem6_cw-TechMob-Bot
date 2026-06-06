@@ -124,8 +124,9 @@ async function handleUserSend() {
             botText = rec.message;
         }
 
-        // Simulate thinking delay (1.2s) for realistic typing effect
-        await new Promise(resolve => setTimeout(resolve, 1200));
+        // Simulate thinking delay (1.2s) for realistic typing effect, bypass in demo mode
+        const isDemo = new URLSearchParams(window.location.search).has('demo');
+        await new Promise(resolve => setTimeout(resolve, isDemo ? 0 : 1200));
         
         hideTypingIndicator();
         
