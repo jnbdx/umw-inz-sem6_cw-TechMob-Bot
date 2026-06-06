@@ -712,5 +712,167 @@ body.dark .login-error-msg {
     color: var(--text-secondary);
 }
 
+/* ==========================================================================
+   BACKGROUND ANIMATIONS (WINDMILL & SWALLOWS)
+   ========================================================================== */
+
+/* Windmill / Wiatraczek */
+.windmill {
+    position: fixed;
+    bottom: 30px;
+    left: 45px;
+    width: 120px;
+    height: 220px;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.12;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-secondary);
+    transition: opacity 0.5s ease;
+}
+
+body.dark .windmill {
+    opacity: 0.08;
+}
+
+.windmill-stand {
+    width: 3px;
+    height: 150px;
+    background: linear-gradient(to top, var(--text-muted), var(--text-secondary));
+    border-radius: 2px;
+    position: absolute;
+    bottom: 0;
+}
+
+.windmill-head {
+    position: absolute;
+    top: 0;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.windmill-svg {
+    width: 100%;
+    height: 100%;
+    animation: spinWindmill 14s linear infinite;
+    transform-origin: 50% 50%;
+}
+
+@keyframes spinWindmill {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Swallows / Jaskółki */
+.swallows-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.swallow {
+    position: absolute;
+    width: 44px;
+    height: 26px;
+    color: var(--text-secondary);
+    opacity: 0.14;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+body.dark .swallow {
+    opacity: 0.07;
+}
+
+.swallow-svg {
+    width: 100%;
+    height: 100%;
+    animation: birdFlap 0.7s ease-in-out infinite alternate;
+    transform-origin: 50% 40%;
+}
+
+.swallow-1 {
+    top: 15%;
+    animation: flyAcross1 22s linear infinite;
+}
+
+.swallow-2 {
+    top: 28%;
+    animation: flyAcross2 28s linear infinite;
+    animation-delay: 5s;
+}
+
+.swallow-3 {
+    top: 42%;
+    animation: flyAcross3 32s linear infinite;
+    animation-delay: 10s;
+}
+
+@keyframes flyAcross1 {
+    0% {
+        left: -80px;
+        transform: translateY(0) scale(0.95);
+    }
+    50% {
+        transform: translateY(-25px) scale(1.05);
+    }
+    100% {
+        left: 105%;
+        transform: translateY(15px) scale(0.95);
+    }
+}
+
+@keyframes flyAcross2 {
+    0% {
+        left: -80px;
+        transform: translateY(0) scale(0.75);
+    }
+    50% {
+        transform: translateY(20px) scale(0.8);
+    }
+    100% {
+        left: 105%;
+        transform: translateY(-15px) scale(0.75);
+    }
+}
+
+@keyframes flyAcross3 {
+    0% {
+        left: -80px;
+        transform: translateY(0) scale(0.55);
+    }
+    50% {
+        transform: translateY(-15px) scale(0.6);
+    }
+    100% {
+        left: 105%;
+        transform: translateY(20px) scale(0.55);
+    }
+}
+
+@keyframes birdFlap {
+    0% {
+        transform: scaleY(0.35) skewX(-4deg);
+    }
+    100% {
+        transform: scaleY(1) skewX(4deg);
+    }
+}
+
+
 
 

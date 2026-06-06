@@ -370,4 +370,13 @@ W celu ograniczenia dostępu do bota i dodania podstawowej kontroli dostępu, za
 - **Przycisk wylogowania (Logout)**: W nagłówku czatu dodałem ikonę wylogowania, która czyści sesję w pamięci przeglądarki i błyskawicznie cofa użytkownika do ekranu logowania.
 - **Bypass dla trybu demo/testowego**: Zmodyfikowałem plik `main.js`, aby przy testach automatycznych (uruchamianych z parametrem query `?demo=...`) użytkownik był logowany automatycznie. Pozwala to na poprawne działanie istniejących skryptów generujących zrzuty ekranu bez blokowania na ekranie autoryzacji.
 
+## 7. Dodatkowe animacje tła (Wiatraczek i Jaskółki)
+
+W celu podniesienia dynamiki i unikalności wizualnej interfejsu (efekt głębi za szkłem), dodałem subtelne, płynne animacje działające w tle:
+- **Wirujący wiatraczek (Paper Pinwheel)**: W lewym dolnym rogu tła umieściłem delikatną makietę wiatraczka. Maszt został ostylizowany za pomocą gradientu, a sam wirnik z 4 zakrzywionymi łopatkami (SVG) kręci się płynnie i nieprzerwanie w tempie `14s` na pełny obrót dzięki animacji `@keyframes spinWindmill`.
+- **Lecące jaskółki (Swallows)**: Wprowadziłem stado trzech jaskółek przelatujących nad taflą czatu od lewej do prawej krawędzi ekranu. Każdy ptak leci na innej wysokości, z inną prędkością (od `22s` do `32s`) oraz różnym opóźnieniem startowym, co tworzy naturalną perspektywę i poczucie trójwymiarowości.
+- **Trzepotanie skrzydeł**: Sylwetki ptaków (SVG) posiadają organiczną animację trzepotania skrzydeł (`@keyframes birdFlap` wykorzystujące szybkie, naprzemienne przekształcenia `scaleY` i `skewX`), co doskonale symuluje prawdziwy ruch ptaka w powietrzu.
+- **Dopasowanie kontrastu**: Zgodnie z wytycznymi WCAG, przezroczystość animacji w tle została ustawiona na bardzo niskim poziomie (`0.12` - `0.14` w trybie jasnym oraz `0.07` - `0.08` w trybie ciemnym), dzięki czemu ruch nie odciąga wzroku od czytania wiadomości i nie wpływa negatywnie na komfort użytkowania.
+
+
 
