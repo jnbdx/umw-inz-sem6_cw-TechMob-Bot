@@ -2,6 +2,7 @@
 import { getRecommendation } from './Recommender.js';
 import { fetchWeather } from './weatherAPI.js';
 import { saveHistory, loadHistory } from './storage.js';
+import { askAI } from './aiAPI.js';
 
 // DOM Elements cache
 let chatBox;
@@ -163,9 +164,9 @@ async function handleUserSend() {
 
     try {
         let botText = "";
+        let resolvedWeather = null;
         
-        // Smart query parsing: is it a city query?
-        // Strip common prepositions and time words to isolate the city name
+        // Smart query parsing: is it a potential city query?
         let cleanText = text
             .replace(/^pogoda\s+(?:w\s+|we\s+)?/i, '')
             .replace(/^(?:w\s+|we\s+|dzisiaj\s+|jutro\s+|teraz\s+)/i, '')
@@ -174,29 +175,42 @@ async function handleUserSend() {
             
         const words = cleanText.split(/\s+/);
         const hasNumbers = /\d/.test(text);
-        
-        // Define if the user is describing weather instead of querying a city
         const isWeatherDescription = /stopn|deszc|wiatr|słoń|śnieg|zimn|ciepł|gorąc|chłod|mróz|pada|wichur|upał/i.test(text);
         
         // If it looks like a city query (no numbers, up to 4 words, not describing weather, and has min length)
         if (!hasNumbers && words.length <= 4 && !isWeatherDescription && cleanText.length > 2) {
             const weather = await fetchWeather(cleanText);
             if (weather && weather.success) {
-                // If weather fetched, use recommender on the structured result
-                const rec = getRecommendation(`Jest ${weather.temperature} stopni i ${weather.description}`);
-                botText = `Aktualna pogoda w mieście **${weather.city}**:\n` +
-                          `🌡️ Temperatura: **${weather.temperature}°C**\n` +
-                          `☁️ Warunki: *${weather.description}*\n` +
-                          `*(Źródło: ${weather.source})*\n\n` +
-                          `${rec.message}`;
-            } else {
-                const errorDetail = weather && weather.error ? `Powód: ${weather.error}` : "Upewnij się, że nazwa miasta jest poprawna.";
-                botText = `Niestety nie udało mi się pobrać pogody dla miasta **${cleanText}**.\n\n⚠️ **${errorDetail}**`;
+                resolvedWeather = weather;
             }
-        } else {
-            // Treat as descriptive weather text input
+        }
+
+        if (resolvedWeather) {
+            // Case 1: Weather resolved successfully
+            const rec = getRecommendation(`Jest ${resolvedWeather.temperature} stopni i ${resolvedWeather.description}`);
+            botText = `Aktualna pogoda w mieście **${resolvedWeather.city}**:\n` +
+                      `🌡️ Temperatura: **${resolvedWeather.temperature}°C**\n` +
+                      `☁️ Warunki: *${resolvedWeather.description}*\n` +
+                      `*(Źródło: ${resolvedWeather.source})*\n\n` +
+                      `${rec.message}`;
+                      
+            // Get AI follow-up suggestions
+            const tempHistory = [...messageHistory, { text: botText, sender: 'bot-message' }];
+            const aiFollowUp = await askAI(tempHistory);
+            botText = `${botText}\n\n💡 **Dodatkowa sugestia AuraStyle AI:**\n${aiFollowUp}`;
+        } else if (isWeatherDescription) {
+            // Case 2: User described weather manually
             const rec = getRecommendation(text);
             botText = rec.message;
+            
+            // Get AI follow-up suggestions
+            const tempHistory = [...messageHistory, { text: botText, sender: 'bot-message' }];
+            const aiFollowUp = await askAI(tempHistory);
+            botText = `${botText}\n\n💡 **Dodatkowa sugestia AuraStyle AI:**\n${aiFollowUp}`;
+        } else {
+            // Case 3: Conversational chat (e.g. greetings, follow-up questions)
+            const aiResponse = await askAI(messageHistory);
+            botText = aiResponse;
         }
 
         // Simulate thinking delay (1.2s) for realistic typing effect, bypass in demo mode

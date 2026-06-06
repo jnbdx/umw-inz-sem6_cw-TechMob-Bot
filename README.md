@@ -399,6 +399,15 @@ Aby uruchomić aplikację online bezpośrednio z Twojego repozytorium GitHub, wy
 - **Obsługa modułów ES6**: GitHub Pages natywnie obsługuje i serwuje pliki JavaScript z poprawnym typem MIME (`application/javascript`), co oznacza, że modułowa struktura aplikacji (`type="module"`) działa bezbłędnie bez konieczności bundlowania (np. Webpackiem czy Vite).
 - **Ścieżki relatywne**: Wszystkie odnośniki do plików JS, CSS oraz zasobów w projekcie zostały zrealizowane jako ścieżki relatywne (np. `./js/chatUI.js` zamiast `/js/chatUI.js`). Zapobiega to błędom ładowania zasobów, gdy strona jest hostowana w podkatalogu repozytorium (co jest standardem dla GitHub Pages).
 
+## 9. Integracja z darmowym modelem językowym GPT AI (Pollinations AI)
+
+W celu wzbogacenia interakcji z botem i umożliwienia swobodnej konwersacji, zintegrowałem projekt z darmowym, niewymagającym rejestracji ani kluczy API modelem językowym GPT/LLaMA za pośrednictwem serwisu **Pollinations AI**:
+- **Dwuwarstwowy przepływ odpowiedzi (Hybrid Architecture)**:
+  * **Zapytanie o pogodę / miasto**: Aplikacja najpierw błyskawicznie wykonuje lokalną prognozę z Open-Meteo oraz dopasowuje sztywne, bezpieczne reguły rekomendacji ubrań (za pomocą `Recommender.js`). Następnie w tle wysyła zapytanie do GPT AI z prośbą o wygenerowanie spersonalizowanej, przyjaznej porady uzupełniającej (np. propozycja kawiarni lub aktywności sportowej na deszczowy dzień w danym mieście) i łączy oba teksty w jedną odpowiedź.
+  * **Dowolna rozmowa (Conversational Mode)**: Jeśli użytkownik nie pyta bezpośrednio o pogodę, lecz zadaje pytanie otwarte lub odnosi się do poprzedniej odpowiedzi (np. *"A czy adidasy zamiast traperów będą okej?"*), aplikacja wysyła całą historię czatu do modelu GPT AI. Model analizuje kontekst rozmowy i generuje w 100% dynamiczną, naturalną odpowiedź.
+- **Bezpieczny Fallback (Niezawodność UX)**: W module `js/aiAPI.js` wdrożyłem mechanizm przechwytywania błędów (try-catch). W przypadku problemów z łącznością sieciową lub nałożenia limitów IP na darmowym serwerze, aplikacja automatycznie podstawia inteligentną wskazówkę fallback, gwarantując płynne działanie czatu.
+
+
 
 
 
