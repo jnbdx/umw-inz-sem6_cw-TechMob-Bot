@@ -36,6 +36,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         `;
         document.head.appendChild(style);
+
+        // Inject a delayed image to force Firefox screenshot to wait until async APIs render
+        const delayImg = document.createElement('img');
+        delayImg.src = '/delay.png?t=' + Date.now();
+        delayImg.style.display = 'none';
+        document.body.appendChild(delayImg);
     }
     
     // Now initialize chat with clean storage
