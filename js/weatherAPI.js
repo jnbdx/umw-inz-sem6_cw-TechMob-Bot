@@ -1,65 +1,9 @@
 // Weather API Module
-import { getApiKey } from './storage.js';
 
-/**
- * Fetches current weather for a given city from OpenWeatherMap or falls back to realistic mock data.
- * @param {string} city - The name of the city.
- * @returns {Promise<object>} Weather data containing temperature and conditions.
- */
 export async function fetchWeather(city) {
     const formattedCity = city.trim();
-    const apiKey = getApiKey();
     
-    // Check if we have an API key configured
-    if (apiKey) {
-        try {
-            const apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(formattedCity)}&appid=${apiKey}&units=metric&lang=pl`;
-            const response = await fetch(apiURL);
-            
-            if (!response.ok) {
-                throw new Error(`Błąd API: ${response.status} ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            
-            // Map API response to our app format
-            const temp = Math.round(data.main.temp);
-            const mainCondition = data.weather[0].main.toLowerCase();
-            const desc = data.weather[0].description;
-            const windSpeed = data.wind.speed; // m/s
-            
-            return {
-                success: true,
-                source: "OpenWeatherMap API",
-                city: data.name,
-                temperature: temp,
-                description: desc,
-                conditions: {
-                    rain: mainCondition.includes("rain") || mainCondition.includes("drizzle"),
-                    snow: mainCondition.includes("snow"),
-                    wind: windSpeed > 8, // > 8 m/s (~29 km/h) is strong wind
-                    sun: mainCondition.includes("clear") || (mainCondition.includes("clouds") && data.clouds.all < 30)
-                }
-            };
-        } catch (error) {
-            console.warn("OpenWeather API failed. Error:", error.message);
-            
-            // Map common HTTP errors to user-friendly Polish messages
-            let userFriendlyError = error.message;
-            if (error.message.includes("401")) {
-                userFriendlyError = "Niepoprawny lub nieaktywny klucz API (aktywacja nowego klucza może potrwać do 2 godzin na serwerach OpenWeather)";
-            } else if (error.message.includes("404")) {
-                userFriendlyError = "Nie znaleziono takiego miasta w bazie OpenWeather";
-            }
-            
-            return {
-                success: false,
-                error: userFriendlyError
-            };
-        }
-    }
-    
-    // 2. If no key, dynamically fetch from Open-Meteo (FREE, NO KEY REQUIRED!)
+    // 1. Dynamically fetch from Open-Meteo (FREE, NO KEY REQUIRED!)
     try {
         // Step A: Geocoding (resolves City Name to Coordinates)
         const geoURL = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(formattedCity)}&count=1&language=pl&format=json`;

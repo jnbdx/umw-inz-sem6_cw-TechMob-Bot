@@ -1,7 +1,7 @@
 // Chat UI Module
 import { getRecommendation } from './Recommender.js';
 import { fetchWeather } from './weatherAPI.js';
-import { saveHistory, loadHistory, getApiKey, saveApiKey } from './storage.js';
+import { saveHistory, loadHistory } from './storage.js';
 
 // DOM Elements cache
 let chatBox;
@@ -10,11 +10,6 @@ let sendBtn;
 let themeToggleBtn;
 let typingIndicator;
 let quickTags;
-let settingsBtn;
-let settingsModal;
-let closeModalBtn;
-let saveSettingsBtn;
-let apiKeyInput;
 
 // State
 let messageHistory = [];
@@ -30,26 +25,12 @@ export function initChat() {
     themeToggleBtn = document.getElementById('theme-toggle');
     typingIndicator = document.getElementById('typing-indicator');
     quickTags = document.querySelectorAll('.quick-tag-btn');
-    settingsBtn = document.getElementById('settings-btn');
-    settingsModal = document.getElementById('settings-modal');
-    closeModalBtn = document.getElementById('close-modal-btn');
-    saveSettingsBtn = document.getElementById('save-settings-btn');
-    apiKeyInput = document.getElementById('api-key-input');
-
     // Bind Event Listeners
     sendBtn.addEventListener('click', handleUserSend);
     userInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') handleUserSend();
     });
     themeToggleBtn.addEventListener('click', toggleTheme);
-    settingsBtn.addEventListener('click', openSettings);
-    closeModalBtn.addEventListener('click', closeSettings);
-    saveSettingsBtn.addEventListener('click', handleSaveSettings);
-    
-    // Close modal on background overlay click
-    settingsModal.addEventListener('click', (e) => {
-        if (e.target === settingsModal) closeSettings();
-    });
 
     // Bind Quick Tags
     quickTags.forEach(btn => {
@@ -92,29 +73,6 @@ function toggleTheme() {
     const isDark = document.body.classList.toggle('dark');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
     themeToggleBtn.querySelector('.toggle-icon').textContent = isDark ? '☀️' : '🌙';
-}
-
-function openSettings() {
-    apiKeyInput.value = getApiKey();
-    settingsModal.classList.remove('hidden');
-    settingsModal.setAttribute('aria-hidden', 'false');
-}
-
-function closeSettings() {
-    settingsModal.classList.add('hidden');
-    settingsModal.setAttribute('aria-hidden', 'true');
-}
-
-function handleSaveSettings() {
-    const key = apiKeyInput.value.trim();
-    saveApiKey(key);
-    closeSettings();
-    
-    const confirmationText = key 
-        ? "Klucz API został pomyślnie zapisany! ⚙️ Od teraz będę pobierać aktualne dane o pogodzie w czasie rzeczywistym."
-        : "Klucz API został usunięty. Przechodzę w tryb symulacji pogodowej.";
-        
-    addMessage(confirmationText, 'bot-message', true);
 }
 
 

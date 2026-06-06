@@ -15,8 +15,7 @@ Po pierwszym otwarciu strony (lub wyczyszczeniu danych sesyjnych) chatbot automa
 ---
 
 ## 🔍 2. Wyszukiwanie Pogody po Nazwie Miasta
-Gdy wpiszemy samą nazwę miasta (np. *Bydgoszcz*), chatbot wykrywa zapytanie lokalizacyjne (brak liczb, krótka fraza) i odpytuje moduł API. 
-Dla prezentacji działania wdrożony został dynamiczny silnik symulacji pogody (jeśli nie podano klucza OpenWeather), który zwraca precyzyjne i rzeczywiste dane.
+Wyszukiwanie odbywa się w czasie rzeczywistym za pomocą darmowego i otwartego API Open-Meteo (bez konieczności używania klucza API).
 
 * **Flow:**
   1. Użytkownik wpisuje: `Bydgoszcz`
@@ -70,7 +69,7 @@ Przełącznik w nagłówku pozwala na błyskawiczne przełączenie interfejsu w 
                  ▼
     [ Parsowanie w js/chatUI.js ]
       ├── CZY TO MIASTO? (fewer than 3 words, no numbers)
-      │     ├── TAK ──► [ js/weatherAPI.js ] ──► Odpytanie OpenWeatherMap
+      │     ├── TAK ──► [ js/weatherAPI.js ] ──► Odpytanie Open-Meteo API (Geocoding + Forecast)
       │     └── NIE ──► Przekaż tekst bezpośrednio do rekomendera
                  │
                  ▼

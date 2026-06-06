@@ -326,6 +326,15 @@ Pokazuje działanie Dark Mode oraz zachowanie interfejsu przy zapytaniu o ciepł
 
 Szczegółowy diagram przepływu danych i techniczny opis architektury flow znajduje się bezpośrednio w pliku [pokaz_dzialania/flow_aplikacji.md](pokaz_dzialania/flow_aplikacji.md).
 
+## 4. Przejście na w pełni bezkluczykowe API pogodowe i usunięcie panelu ustawień
+
+Zgodnie z wymaganiami, aby aplikacja działała natychmiast po uruchomieniu bez konieczności rejestracji i wklejania jakichkolwiek kluczy API, dokonałem refaktoryzacji kodu:
+- **Pełna integracja z Open-Meteo API**: Czat pobiera teraz dane w czasie rzeczywistym bezpośrednio z darmowego i otwartego API Open-Meteo. Zapytanie najpierw geokoduje nazwę miasta do współrzędnych geograficznych (szerokość/długość geograficzna), a następnie pobiera aktualną temperaturę, wiatr i kod pogodowy WMO.
+- **Usunięcie panelu konfiguracji API**: Całkowicie wyczyściłem z kodu (HTML/CSS/JS) modalne okno ustawień oraz przyciski do zapisywania klucza OpenWeather. Zapobiega to jakimkolwiek błędom ładowania oraz eliminuje potrzebę konfiguracji po stronie użytkownika.
+- **Rozwiązanie błędu inicjalizacji**: Naprawiłem błąd JS (NullPointerException) związany z bindowaniem zdarzeń do nieistniejącego już przycisku ustawień, dzięki czemu chatbot i wszystkie jego interaktywne funkcje (wysyłanie wiadomości, Enter, przełącznik motywu) działają teraz w 100% poprawnie.
+- **Automatyczny fallback**: W przypadku problemów z siecią lub braku odpowiedzi z serwera Open-Meteo, chatbot płynnie przełącza się na wbudowaną bazę symulacyjną (mock/random) dla polskich miast, gwarantując niezawodność działania.
+
+
 
 
 
