@@ -350,3 +350,12 @@ Przeprowadziłem gruntowne czyszczenie kodu we wszystkich warstwach aplikacji:
 1. **API bez kluczy to lepszy UX**: Wykorzystanie Open-Meteo pozwoliło zachować 100% dynamicznej funkcjonalności pobierania pogody z dowolnego miejsca na świecie bez obciążania użytkownika procesem rejestracji konta deweloperskiego.
 2. **Architektura bezstanowa na froncie**: Przechowywanie kluczy API w `localStorage` przeglądarki klienta jest niebezpieczne i podatne na błędy (np. blokowanie zapytań przy nieaktywnym kluczu). Usunięcie tego mechanizmu poprawiło stabilność aplikacji.
 3. **Niezawodność dzięki mechanizmowi Fallback**: Wbudowanie w silnik `weatherAPI.js` automatycznego przejścia na deterministyczną symulację pogody (mock) w przypadku problemów z połączeniem internetowym gwarantuje, że chatbot nigdy nie pozostawi użytkownika bez odpowiedzi.
+
+## 5. Modernizacja wizualna w stylu iOS Glass (High-Fidelity Glassmorphism)
+
+W celu nadania aplikacji wyjątkowego, nowoczesnego wyglądu zaimplementowałem pełną modernizację stylu wizualnego wzorowaną na interfejsie iOS (szkło akrylowe z głębią trójwymiarową):
+- **Dynamiczne kule tła (Background Blobs)**: Dodałem dwa duże, kolorowe okręgi z radialnymi gradientami (różowo-fioletowym oraz niebiesko-morskim), które delikatnie pływają w tle strony dzięki animacjom `@keyframes floatBlob1` i `floatBlob2`. Kule te prześwitują przez półprzezroczystą kartę czatu, dając niesamowity efekt przestrzenny.
+- **Ekstremalne rozmycie szkła**: Zwiększyłem rozmycie tła karty czatu (`backdrop-filter`) z 20px do 45px, co pozwala na idealne zasymulowanie matowego szkła akrylowego iOS. Krawędzie karty zyskały cienką, jasną obwódkę imitującą odbicie światła na szklanej krawędzi.
+- **Dymki w stylu Apple iMessage**: Dymki wiadomości użytkownika otrzymały Apple Blue gradient (`#007aff` -> `#5856d6`) z zaokrąglonymi rogami i lekkim cieniem. Dymki bota to z kolei czyste, szklane bąbelki o wyższym kontraście, które idealnie pasują zarówno do trybu jasnego, jak i ciemnego.
+- **Widgety i elementy formularzy**: Informacje o pogodzie (np. po wyszukaniu miasta) są teraz prezentowane jako elegancki, zaokrąglony widget pogodowy iOS (`border-radius: 16px;`), a pasek wprowadzania wiadomości przyjął formę gładkiej, zaokrąglonej kapsuły z okrągłym przyciskiem wysyłania.
+
