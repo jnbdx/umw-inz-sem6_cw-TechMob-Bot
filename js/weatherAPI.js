@@ -57,12 +57,81 @@ export async function fetchWeather(city) {
                 error: userFriendlyError
             };
         }
-    } else {
-        // No API key configured - simulate network request and return mock weather
+    }
+    
+    // 2. If no key, dynamically fetch from Open-Meteo (FREE, NO KEY REQUIRED!)
+    try {
+        // Step A: Geocoding (resolves City Name to Coordinates)
+        const geoURL = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(formattedCity)}&count=1&language=pl&format=json`;
+        const geoResponse = await fetch(geoURL);
+        
+        if (!geoResponse.ok) {
+            throw new Error("Geocoding failed");
+        }
+        
+        const geoData = await geoResponse.json();
+        if (!geoData.results || geoData.results.length === 0) {
+            throw new Error("Nie znaleziono miasta");
+        }
+        
+        const location = geoData.results[0];
+        const lat = location.latitude;
+        const lon = location.longitude;
+        const resolvedName = location.name;
+        
+        // Step B: Get Current Weather
+        const weatherURL = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m&wind_speed_unit=ms`;
+        const weatherResponse = await fetch(weatherURL);
+        
+        if (!weatherResponse.ok) {
+            throw new Error("Weather fetch failed");
+        }
+        
+        const weatherData = await weatherResponse.json();
+        const current = weatherData.current;
+        
+        const temp = Math.round(current.temperature_2m);
+        const code = current.weather_code;
+        const windSpeed = current.wind_speed_10m;
+        const desc = getWeatherDescription(code);
+        
+        return {
+            success: true,
+            source: "Open-Meteo API",
+            city: resolvedName,
+            temperature: temp,
+            description: desc,
+            conditions: {
+                rain: (code >= 51 && code <= 67) || (code >= 80 && code <= 82) || (code >= 95),
+                snow: (code >= 71 && code <= 77) || (code >= 85 && code <= 86),
+                wind: windSpeed > 8,
+                sun: code === 0 || code === 1
+            }
+        };
+    } catch (error) {
+        console.warn("Open-Meteo API failed, falling back to mock database. Error:", error.message);
+        // Simulate minor loading delay for consistency in fallback
         const isDemo = new URLSearchParams(window.location.search).has('demo');
-        await new Promise(resolve => setTimeout(resolve, isDemo ? 0 : 800)); // Simulate loading delay
+        await new Promise(resolve => setTimeout(resolve, isDemo ? 0 : 500));
         return getMockWeather(formattedCity);
     }
+}
+
+/**
+ * Maps WMO code to weather description.
+ */
+function getWeatherDescription(code) {
+    if (code === 0) return "czyste niebo, słonecznie";
+    if (code === 1 || code === 2) return "częściowe zachmurzenie";
+    if (code === 3) return "pochmurno";
+    if (code === 45 || code === 48) return "mgła";
+    if (code === 51 || code === 53 || code === 55) return "mżawka";
+    if (code === 61 || code === 63 || code === 65) return "opady deszczu";
+    if (code === 71 || code === 73 || code === 75) return "opady śniegu";
+    if (code === 80 || code === 81 || code === 82) return "przelotne opady deszczu";
+    if (code === 85 || code === 86) return "przelotne opady śniegu";
+    if (code === 95 || code === 96 || code === 99) return "burza";
+    return "zmienne warunki";
 }
 
 function getMockWeather(city) {
