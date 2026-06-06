@@ -261,3 +261,17 @@ mikroanimacje i nowoczesny design AI assistant.
 wszystko musi byc realizowane w github
 print screens z github
 ```
+
+## 1. Wprowadzenie i zaplanowanie pracy
+
+Należy zrealizować projekt aplikacji internetowej typu chatbot. Wprowadzam zatem podejście modułowe - zakres prac określony w etapach realizuje samo działanie podstawowe ale należy uwzględnić otoczenie i ustawienie usług Azure Cloud, wraz z odpowiednim ustawieniem środowiska.
+
+Sam projekt strony internetowej jest założony w realizacji etapami - więc wprowadzam założenie publikowania commits na platformie github. Screenshoty z postepem prac zostaną umieszczone w repozytorium oraz śledzenie postępów odbędzie się w ramach git commits tracking.
+
+Realizuję zadanie przy pomocy separowanego lab-a w maszynie wirtualnej dla czystości rozwiązania.
+
+Brakujące a wymagane jest założenie osobnego tenanta Azure - skorzystam z uczelnianego konta aby założyć darmowe konto MS Azure do propgacji - jednak zrobię to w dalszych krokach.
+
+Dedykuję katalog /notes w repozytorium do własnych notatek, działania ogólnego itd.
+
+
