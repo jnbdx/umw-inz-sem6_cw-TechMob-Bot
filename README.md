@@ -306,106 +306,93 @@ Cały projekt był realizowany z podziałem na gałęzie funkcjonalne (feature b
 
 Wszystkie gałęzie oraz główny branch `main` zostały wypchnięte na serwer GitHub.
 
-## 3. Prezentacja działania i zrzuty ekranu (Lokalne Testy)
+## 3. Podsumowanie zrealizowanych rozszerzeń funkcjonalnych (Sprawozdanie)
 
-Aby udokumentować poprawne działanie chatbota, uruchomiłem lokalny serwer testowy i przeprowadziłem automatyczną sesję testową z użyciem przeglądarki w trybie bezgłowym (headless). Wszystkie zrzuty ekranu oraz szczegółowy opis przepływu danych (flow) umieściłem w dedykowanym katalogu `pokaz_dzialania/`.
+W trakcie dalszych prac nad projektem zaimplementowano szereg zaawansowanych rozszerzeń funkcjonalnych oraz wizualnych, podnoszących jakość interakcji, estetykę oraz stabilność systemu. Poniżej znajduje się szczegółowy opis wdrożonych elementów:
 
-Poniżej przedstawiam podsumowanie zrzutów ekranu obrazujących kluczowe stany aplikacji:
+### 3.1. Uwierzytelnianie użytkownika i zarządzanie sesją
+W celu zabezpieczenia dostępu do asystenta pogodowego wprowadzono moduł uwierzytelniania działający w architekturze Single Page Application (SPA):
+* **Szklany Ekran Logowania**: Zrealizowany w pełnej spójności wizualnej (iOS Glassmorphism).
+* **Dane Testowe**: Bezpośrednio pod formularzem umieszczono dane logowania dla celów demonstracyjnych i ewaluacyjnych:
+  - Użytkownik: `admin`
+  - Hasło: `admin123`
+* **Zarządzanie Stanem**: Stan zalogowania jest zapisywany w `LocalStorage` (`is_logged_in: true`). Po poprawnym uwierzytelnieniu następuje płynne ukrycie formularza i pokazanie okna czatu.
+* **Wylogowanie**: W nagłówku czatu dodano przycisk wylogowania, który czyści flagę sesji i przywraca ekran logowania.
+* **Tryb Demonstracyjny (Bypass)**: Zaimplementowano automatyczny bypass logowania przy przekazaniu parametru query `?demo=true` (lub dowolnej innej wartości dla klucza `demo`), co umożliwia bezproblemowe działanie testów automatycznych i skryptów bezobsługowych.
 
-### 3.1. Ekran powitalny (`pokaz_dzialania/welcome.png`)
-Pokazuje stan czatu tuż po wejściu na stronę (czysty stan LocalStorage). Bot wyświetla komunikat powitalny i sugeruje szybkie tagi pogodowe na dole okna.
+### 3.2. Nowoczesny Interfejs iOS Glassmorphism (High-Fidelity UI)
+Przeniesiono stylistykę wizualną na poziom premium, opierając się na systemie iOS:
+* **Głębokie Szkło (Acrylic Blur)**: Karta czatu oraz okno logowania posiadają właściwość `backdrop-filter: blur(45px)` połączoną z bardzo cienką, jasną półprzezroczystą obwódką imitującą refleksy świetlne na krawędziach szkła.
+* **Pływające Kule Gradientowe (Background Blobs)**: Pod warstwą szkła umieszczono dwa duże, rozmyte obiekty wektorowe z radialnymi gradientami (fioletowo-różowym oraz niebiesko-morskim). Pływają one płynnie po ekranie dzięki asynchronicznym animacjom CSS (`floatBlob1` oraz `floatBlob2`), dając efekt głębi trójwymiarowej.
+* **Dymki Wiadomości w Stylu Apple iMessage**: Wiadomości użytkownika są ostylowane z użyciem gradientu Apple Blue (`#007aff` do `#5856d6`) z zaokrąglonymi rogami, natomiast wiadomości bota to kontrastowe, półprzezroczyste szklane bąbelki, świetnie prezentujące się zarówno w motywie jasnym, jak i ciemnym.
 
-### 3.2. Wyszukiwanie pogody w mieście (`pokaz_dzialania/city_search.png`)
-Prezentuje sytuację, w której wpisałem nazwę miasta "Bydgoszcz". Aplikacja odpytuje moduł API (symulacja danych), po czym dobiera optymalną rekomendację stroju (kurtka z membraną, parasolka, buty trekkingowe) na temperaturę 7°C i deszcz.
+### 3.3. Subtelne Animacje Tła (Wiatraczek i Jaskółki)
+Wprowadzono delikatne animacje dekoracyjne podnoszące dynamikę interfejsu bez naruszania dostępności WCAG:
+* **Wirujący Wiatraczek**: W lewym dolnym rogu umieszczono makietę papierowego wiatraczka (SVG) kręcącego się płynnie i powoli (`14s` na pełny obrót) za pomocą animacji `@keyframes spinWindmill`.
+* **Lecące Jaskółki**: Stado trzech jaskółek (SVG) przelatuje nad taflą czatu od lewej do prawej strony. Każdy ptak leci z inną prędkością (od `22s` do `32s`) i z innym opóźnieniem, a same skrzydła mają organiczną animację trzepotania (`@keyframes birdFlap` wykorzystujące szybkie, naprzemienne przekształcenia `scaleY` i `skewX`).
+* **Zgodność z WCAG (Dostępność)**: Elementy ruchome mają celowo ustawioną bardzo niską przezroczystość (około `0.07`–`0.14`), aby nie odciągać uwagi użytkownika od tekstu wiadomości i nie wywoływać dyskomfortu.
 
-### 3.3. Analiza wpisu użytkownika (`pokaz_dzialania/weather_description.png`)
-Przedstawia analizę ręcznego opisu pogody: *"Jest 7 stopni i pada deszcz"*. Parser RegEx poprawnie wyciąga temperaturę i flagę opadów, a chatbot generuje precyzyjną odpowiedź ubraniową.
+### 3.4. Bezkluczykowa Integracja z API Pogodowym (Open-Meteo)
+Usunięto problematyczny wymóg posiadania kluczy API (np. OpenWeatherMap) na rzecz w pełni bezpłatnej, niewymagającej logowania integracji:
+* **Geokodowanie i Pobieranie Danych**: Aplikacja pobiera dane dwuetapowo za pomocą Fetch API z Open-Meteo. Najpierw wyszukiwane są współrzędne geograficzne (szerokość i długość) dla podanej nazwy miasta, a następnie odpytywane jest API pogodowe o aktualną temperaturę oraz kod pogody (WMO Code).
+* **Niezawodny Fallback**: W przypadku braku połączenia internetowego lub błędu sieci, system automatycznie przechodzi na predefiniowane, realistyczne dane pogodowe dla kluczowych miast, gwarantując ciągłość działania aplikacji.
 
-### 3.4. Motyw ciemny (`pokaz_dzialania/dark_mode.png`)
-Pokazuje działanie Dark Mode oraz zachowanie interfejsu przy zapytaniu o ciepłą, letnią pogodę (*"Słonecznie i 25 stopni"*). Ustawienie motywu jest trwale zapamiętywane w pamięci przeglądarki.
+### 3.5. Integracja z Modelami GPT AI (Pollinations AI)
+Aplikacja została wzbogacona o tryb konwersacyjny oparty na sztucznej inteligencji:
+* **Darmowe API AI**: Zintegrowano darmowe i bezkluczykowe API **Pollinations AI**, które serwuje odpowiedzi z modeli LLM (np. LLaMA/GPT).
+* **Architektura Hybrydowa (Dwuwarstwowa)**:
+  - **Zapytanie o pogodę/miasto**: Silnik `Recommender.js` generuje precyzyjne zalecenia ubraniowe, po czym asynchronicznie odpytywane jest GPT AI, aby wygenerować spersonalizowaną, przyjazną wskazówkę uzupełniającą (np. propozycje atrakcji turystycznych lub kawiarni w danym mieście na deszczowy dzień). Obie warstwy są łączone w jedną spójną odpowiedź.
+  - **Tryb Swobodnej Konwersacji**: Jeśli użytkownik prowadzi zwykły dialog lub dopytuje o szczegóły (np. *"A czy adidasy będą okej?"*), aplikacja przekazuje całą dotychczasową historię czatu do Pollinations AI, pozwalając na w pełni dynamiczną konwersację kontekstową.
 
-Szczegółowy diagram przepływu danych i techniczny opis architektury flow znajduje się bezpośrednio w pliku [pokaz_dzialania/flow_aplikacji.md](pokaz_dzialania/flow_aplikacji.md).
+---
 
-## 4. Refaktoryzacja: Przejście na w pełni bezkluczykowe API pogodowe i usunięcie panelu ustawień
+## 4. Publikacja i hosting (GitHub Pages)
 
-W toku prac zdecydowałem o całkowitym usunięciu konieczności podawania klucza API OpenWeather i uproszczeniu architektury aplikacji pod kątem wygody użytkownika końcowego. Poniżej przedstawiam szczegółowe uzasadnienie, zakres dokonanych zmian oraz techniczne wnioski.
+Ponieważ projekt jest w pełni statyczny i opiera się na technologiach HTML5, CSS3 oraz Vanilla JS, został on opublikowany za pomocą usługi **GitHub Pages**.
 
-### 4.1. Dlaczego wprowadzono zmiany? (Uzasadnienie)
-1. **Wymóg natychmiastowego działania (Out-of-the-box)**: Wmuszanie na użytkowniku rejestracji w zewnętrznym serwisie (OpenWeather) i generowania klucza API znacznie podnosiło próg wejścia. Aplikacja powinna działać natychmiast po uruchomieniu lokalnym lub w chmurze bez żadnej wstępnej konfiguracji.
-2. **Krytyczny błąd inicjalizacji JS (NullPointerException)**: Usunięcie przycisku ustawień (zębatki) z interfejsu przy jednoczesnym pozostawieniu starych dowiązań zdarzeń (`addEventListener`) w kodzie JavaScript powodowało rzucenie błędu w konsoli przeglądarki podczas ładowania strony. Ten błąd paraliżował działanie całej logiki czatu (nie działało wysyłanie wiadomości ani przełącznik motywu).
-3. **Czystość kodu i minimalizm**: Skoro aplikacja przechodzi na w pełni darmowe, niewymagające rejestracji API, utrzymywanie kodu modalnego oraz funkcji pomocniczych do zapisu klucza w LocalStorage stało się zbędnym długiem technologicznym.
+### 4.1. Ścieżki Relatywne i Moduły ES6
+* **Ścieżki Relatywne**: Wszystkie referencje do zasobów (plików JS, CSS, grafik) w kodzie źródłowym zostały zapisane jako ścieżki relatywne (zaczynające się od `./` lub odnoszące się do bieżącego katalogu, np. `./js/chatUI.js`). Zapobiega to błędom ładowania w sytuacji, gdy aplikacja jest serwowana z podkatalogu (co jest standardem dla GitHub Pages: `https://<uzytkownik>.github.io/<nazwa-repozytorium>/`).
+* **Obsługa Modułów**: GitHub Pages bezproblemowo serwuje pliki JavaScript z atrybutem `type="module"`, zachowując pełne wsparcie dla modularnej struktury ES6 bez potrzeby stosowania dodatkowych narzędzi do bundlowania (np. Webpack, Vite).
 
-### 4.2. Co dokładnie zostało zmienione?
-Przeprowadziłem gruntowne czyszczenie kodu we wszystkich warstwach aplikacji:
-- **[index.html](file:///home/devai/Documents/umwb-sem6-cw-bot/index.html)**: Usunąłem cały blok kodu HTML odpowiedzialny za modal ustawień (`#settings-modal`), formularze wprowadzania klucza API oraz przycisk zapisu. Nagłówek czatu pozostał minimalistyczny, zawierając jedynie przełącznik motywu graficznego.
-- **[style.css](file:///home/devai/Documents/umwb-sem6-cw-bot/style.css)**: Wyciąłem ponad 190 linii kodu CSS powiązanego ze stylem okna modalnego, nakładki rozmywającej tło (`.modal-overlay`), pól formularzy oraz animacji wyskalowania modala (`@keyframes modalScaleIn`).
-- **[js/chatUI.js](file:///home/devai/Documents/umwb-sem6-cw-bot/js/chatUI.js)**: 
-  - Usunąłem zmienne przechowujące referencje do elementów DOM powiązanych z ustawieniami.
-  - Skasowałem listenery nasłuchujące kliknięć otwarcia, zamknięcia i zapisu ustawień (co całkowicie rozwiązało błąd `NullPointerException` i przywróciło działanie czatu).
-  - Usunąłem funkcje sterujące modalem: `openSettings()`, `closeSettings()` oraz `handleSaveSettings()`.
-- **[js/storage.js](file:///home/devai/Documents/umwb-sem6-cw-bot/js/storage.js)**: Usunąłem nieużywane funkcje eksportowe `saveApiKey(key)` oraz `getApiKey()`.
-- **[js/weatherAPI.js](file:///home/devai/Documents/umwb-sem6-cw-bot/js/weatherAPI.js)**: Oczyszczono moduł z pozostałości po OpenWeatherMap. Jako główne i jedyne źródło dynamicznych danych pogodowych wdrożyłem **Open-Meteo API** (wykorzystujące dwuetapowy proces: najpierw darmowe geokodowanie nazwy miasta do współrzędnych lat/lon, a następnie pobieranie rzeczywistych warunków pogodowych).
-
-### 4.3. Wnioski i Rekomendacje
-1. **API bez kluczy to lepszy UX**: Wykorzystanie Open-Meteo pozwoliło zachować 100% dynamicznej funkcjonalności pobierania pogody z dowolnego miejsca na świecie bez obciążania użytkownika procesem rejestracji konta deweloperskiego.
-2. **Architektura bezstanowa na froncie**: Przechowywanie kluczy API w `localStorage` przeglądarki klienta jest niebezpieczne i podatne na błędy (np. blokowanie zapytań przy nieaktywnym kluczu). Usunięcie tego mechanizmu poprawiło stabilność aplikacji.
-3. **Niezawodność dzięki mechanizmowi Fallback**: Wbudowanie w silnik `weatherAPI.js` automatycznego przejścia na deterministyczną symulację pogody (mock) w przypadku problemów z połączeniem internetowym gwarantuje, że chatbot nigdy nie pozostawi użytkownika bez odpowiedzi.
-
-## 5. Modernizacja wizualna w stylu iOS Glass (High-Fidelity Glassmorphism)
-
-W celu nadania aplikacji wyjątkowego, nowoczesnego wyglądu zaimplementowałem pełną modernizację stylu wizualnego wzorowaną na interfejsie iOS (szkło akrylowe z głębią trójwymiarową):
-- **Dynamiczne kule tła (Background Blobs)**: Dodałem dwa duże, kolorowe okręgi z radialnymi gradientami (różowo-fioletowym oraz niebiesko-morskim), które delikatnie pływają w tle strony dzięki animacjom `@keyframes floatBlob1` i `floatBlob2`. Kule te prześwitują przez półprzezroczystą kartę czatu, dając niesamowity efekt przestrzenny.
-- **Ekstremalne rozmycie szkła**: Zwiększyłem rozmycie tła karty czatu (`backdrop-filter`) z 20px do 45px, co pozwala na idealne zasymulowanie matowego szkła akrylowego iOS. Krawędzie karty zyskały cienką, jasną obwódkę imitującą odbicie światła na szklanej krawędzi.
-- **Dymki w stylu Apple iMessage**: Dymki wiadomości użytkownika otrzymały Apple Blue gradient (`#007aff` -> `#5856d6`) z zaokrąglonymi rogami i lekkim cieniem. Dymki bota to z kolei czyste, szklane bąbelki o wyższym kontraście, które idealnie pasują zarówno do trybu jasnego, jak i ciemnego.
-- **Widgety i elementy formularzy**: Informacje o pogodzie (np. po wyszukaniu miasta) są teraz prezentowane jako elegancki, zaokrąglony widget pogodowy iOS (`border-radius: 16px;`), a pasek wprowadzania wiadomości przyjął formę gładkiej, zaokrąglonej kapsuły z okrągłym przyciskiem wysyłania.
-
-## 6. Uwierzytelnianie użytkownika (Ekran Logowania)
-
-W celu ograniczenia dostępu do bota i dodania podstawowej kontroli dostępu, zaimplementowałem prosty ekran logowania zintegrowany z interfejsem czatu:
-- **Szklana karta logowania (Login Card)**: Ekran logowania jest w pełni spójny z resztą interfejsu i zrealizowany w stylu iOS Glassmorphism.
-- **Uwierzytelnianie po stronie klienta (SPA)**: Logowanie odbywa się asynchronicznie. Przy udanej weryfikacji stan sesji jest zapisywany w `LocalStorage` jako `is_logged_in: true`, a widok logowania płynnie przełącza się na okno czatu bez przeładowywania strony.
-- **Konto testowe**: Bezpośrednio pod formularzem umieściłem czytelną informację z danymi testowymi dla szybkiej weryfikacji:
-  * Użytkownik: **admin**
-  * Hasło: **admin123**
-- **Przycisk wylogowania (Logout)**: W nagłówku czatu dodałem ikonę wylogowania, która czyści sesję w pamięci przeglądarki i błyskawicznie cofa użytkownika do ekranu logowania.
-- **Bypass dla trybu demo/testowego**: Zmodyfikowałem plik `main.js`, aby przy testach automatycznych (uruchamianych z parametrem query `?demo=...`) użytkownik był logowany automatycznie. Pozwala to na poprawne działanie istniejących skryptów generujących zrzuty ekranu bez blokowania na ekranie autoryzacji.
-
-## 7. Dodatkowe animacje tła (Wiatraczek i Jaskółki)
-
-W celu podniesienia dynamiki i unikalności wizualnej interfejsu (efekt głębi za szkłem), dodałem subtelne, płynne animacje działające w tle:
-- **Wirujący wiatraczek (Paper Pinwheel)**: W lewym dolnym rogu tła umieściłem delikatną makietę wiatraczka. Maszt został ostylizowany za pomocą gradientu, a sam wirnik z 4 zakrzywionymi łopatkami (SVG) kręci się płynnie i nieprzerwanie w tempie `14s` na pełny obrót dzięki animacji `@keyframes spinWindmill`.
-- **Lecące jaskółki (Swallows)**: Wprowadziłem stado trzech jaskółek przelatujących nad taflą czatu od lewej do prawej krawędzi ekranu. Każdy ptak leci na innej wysokości, z inną prędkością (od `22s` do `32s`) oraz różnym opóźnieniem startowym, co tworzy naturalną perspektywę i poczucie trójwymiarowości.
-- **Trzepotanie skrzydeł**: Sylwetki ptaków (SVG) posiadają organiczną animację trzepotania skrzydeł (`@keyframes birdFlap` wykorzystujące szybkie, naprzemienne przekształcenia `scaleY` i `skewX`), co doskonale symuluje prawdziwy ruch ptaka w powietrzu.
-- **Dopasowanie kontrastu**: Zgodnie z wytycznymi WCAG, przezroczystość animacji w tle została ustawiona na bardzo niskim poziomie (`0.12` - `0.14` w trybie jasnym oraz `0.07` - `0.08` w trybie ciemnym), dzięki czemu ruch nie odciąga wzroku od czytania wiadomości i nie wpływa negatywnie na komfort użytkowania.
-
-## 8. Publikacja i hosting za pomocą GitHub Pages
-
-Ponieważ nasza aplikacja jest w pełni statycznym projektem (Pure HTML5/CSS3/Vanilla JS), idealnym, darmowym i najszybszym sposobem na jej publikację w sieci jest usługa **GitHub Pages**.
-
-### 8.1. Instrukcja wdrożenia krok po kroku
-Aby uruchomić aplikację online bezpośrednio z Twojego repozytorium GitHub, wykonaj poniższe czynności:
-1. Wejdź na stronę swojego repozytorium na GitHubie: `https://github.com/jnbdx/umw-inz-sem6_cw-TechMob-Bot`.
-2. Kliknij zakładkę **Settings** (Ustawienia) w górnym menu repozytorium.
-3. W menu bocznym po lewej stronie znajdź sekcję *Code and automation* i kliknij pozycję **Pages**.
-4. W sekcji **Build and deployment**:
-   - Upewnij się, że jako **Source** wybrane jest: `Deploy from a branch`.
-   - W sekcji **Branch** kliknij rozwijane menu (domyślnie `None`), wybierz branch **`main`**, a w polu wyboru katalogu pozostaw `/ (root)`.
+### 4.2. Instrukcja uruchomienia GitHub Pages krok po kroku
+1. Przejdź do swojego repozytorium na platformie GitHub: `https://github.com/jnbdx/umw-inz-sem6_cw-TechMob-Bot`.
+2. Kliknij zakładkę **Settings** (Ustawienia) w górnym menu nawigacyjnym.
+3. W menu bocznym po lewej stronie znajdź sekcję *Code and automation* wybierz pozycję **Pages**.
+4. W zakładce *Build and deployment*:
+   - Jako **Source** wybierz opcję `Deploy from a branch`.
+   - W sekcji **Branch** wybierz gałąź **`main`** (lub inną gałąź produkcyjną) oraz folder `/ (root)`.
    - Kliknij przycisk **Save** (Zapisz).
-5. GitHub automatycznie uruchomi proces budowania i wdrażania (potrwa to około 1-2 minuty). Postęp możesz śledzić w zakładce **Actions** swojego repozytorium.
-6. Po zakończeniu procesu, na samej górze strony **Settings -> Pages** pojawi się zielony komunikat z linkiem do Twojej działającej aplikacji online, np.:
-   `https://jnbdx.github.io/umw-inz-sem6_cw-TechMob-Bot/`
+5. GitHub Pages uruchomi proces wdrożenia (szczegóły widoczne w zakładce *Actions*). Po około 1–2 minutach na samej górze sekcji *Settings -> Pages* pojawi się zielona informacja z linkiem do wdrożonej aplikacji.
 
-### 8.2. Ważne uwagi techniczne
-- **Obsługa modułów ES6**: GitHub Pages natywnie obsługuje i serwuje pliki JavaScript z poprawnym typem MIME (`application/javascript`), co oznacza, że modułowa struktura aplikacji (`type="module"`) działa bezbłędnie bez konieczności bundlowania (np. Webpackiem czy Vite).
-- **Ścieżki relatywne**: Wszystkie odnośniki do plików JS, CSS oraz zasobów w projekcie zostały zrealizowane jako ścieżki relatywne (np. `./js/chatUI.js` zamiast `/js/chatUI.js`). Zapobiega to błędom ładowania zasobów, gdy strona jest hostowana w podkatalogu repozytorium (co jest standardem dla GitHub Pages).
+**Adres Wdrożonej Strony:**
+[https://jnbdx.github.io/umw-inz-sem6_cw-TechMob-Bot/](https://jnbdx.github.io/umw-inz-sem6_cw-TechMob-Bot/)
 
-## 9. Integracja z darmowym modelem językowym GPT AI (Pollinations AI)
+---
 
-W celu wzbogacenia interakcji z botem i umożliwienia swobodnej konwersacji, zintegrowałem projekt z darmowym, niewymagającym rejestracji ani kluczy API modelem językowym GPT/LLaMA za pośrednictwem serwisu **Pollinations AI**:
-- **Dwuwarstwowy przepływ odpowiedzi (Hybrid Architecture)**:
-  * **Zapytanie o pogodę / miasto**: Aplikacja najpierw błyskawicznie wykonuje lokalną prognozę z Open-Meteo oraz dopasowuje sztywne, bezpieczne reguły rekomendacji ubrań (za pomocą `Recommender.js`). Następnie w tle wysyła zapytanie do GPT AI z prośbą o wygenerowanie spersonalizowanej, przyjaznej porady uzupełniającej (np. propozycja kawiarni lub aktywności sportowej na deszczowy dzień w danym mieście) i łączy oba teksty w jedną odpowiedź.
-  * **Dowolna rozmowa (Conversational Mode)**: Jeśli użytkownik nie pyta bezpośrednio o pogodę, lecz zadaje pytanie otwarte lub odnosi się do poprzedniej odpowiedzi (np. *"A czy adidasy zamiast traperów będą okej?"*), aplikacja wysyła całą historię czatu do modelu GPT AI. Model analizuje kontekst rozmowy i generuje w 100% dynamiczną, naturalną odpowiedź.
-- **Bezpieczny Fallback (Niezawodność UX)**: W module `js/aiAPI.js` wdrożyłem mechanizm przechwytywania błędów (try-catch). W przypadku problemów z łącznością sieciową lub nałożenia limitów IP na darmowym serwerze, aplikacja automatycznie podstawia inteligentną wskazówkę fallback, gwarantując płynne działanie czatu.
+## 5. Instrukcja uruchomienia lokalnego i dane testowe
+
+### 5.1. Uruchomienie lokalne
+Aby uruchomić aplikację na lokalnym komputerze (z obsługą modułów ES6, które ze względów bezpieczeństwa przeglądarek CORS wymagają uruchomienia przez serwer HTTP, a nie bezpośrednio z pliku `file://`):
+1. Pobierz kod źródłowy repozytorium.
+2. Uruchom prosty lokalny serwer HTTP w głównym katalogu projektu:
+   - Z użyciem Pythona:
+     ```bash
+     python3 -m http.server 8000
+     ```
+   - Z użyciem Node.js (np. live-server lub http-server):
+     ```bash
+     npx live-server
+     ```
+3. Otwórz w przeglądarce adres `http://localhost:8000` (lub inny port wskazany przez serwer).
+
+### 5.2. Dane Logowania (Konto Testowe)
+Dla celów szybkiego testowania aplikacji wdrożono domyślne konto użytkownika:
+* **Nazwa użytkownika:** `admin`
+* **Hasło:** `admin123`
+
+Możliwe jest również automatyczne zalogowanie do aplikacji w celach demonstracyjnych (bypass) poprzez dodanie parametru w URL:
+`http://localhost:8000/?demo=true`
+
 
 
 
