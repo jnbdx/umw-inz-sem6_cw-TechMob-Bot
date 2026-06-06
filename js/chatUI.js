@@ -166,7 +166,8 @@ async function handleUserSend() {
                           `*(Źródło: ${weather.source})*\n\n` +
                           `${rec.message}`;
             } else {
-                botText = `Niestety nie udało mi się pobrać pogody dla miasta "${cleanText}". Upewnij się, że nazwa jest poprawna.`;
+                const errorDetail = weather && weather.error ? `Powód: ${weather.error}` : "Upewnij się, że nazwa miasta jest poprawna.";
+                botText = `Niestety nie udało mi się pobrać pogody dla miasta **${cleanText}**.\n\n⚠️ **${errorDetail}**`;
             }
         } else {
             // Treat as descriptive weather text input

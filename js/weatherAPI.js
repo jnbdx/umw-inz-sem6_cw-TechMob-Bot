@@ -42,8 +42,20 @@ export async function fetchWeather(city) {
                 }
             };
         } catch (error) {
-            console.warn("OpenWeather API failed, falling back to mock data. Error:", error.message);
-            return getMockWeather(formattedCity);
+            console.warn("OpenWeather API failed. Error:", error.message);
+            
+            // Map common HTTP errors to user-friendly Polish messages
+            let userFriendlyError = error.message;
+            if (error.message.includes("401")) {
+                userFriendlyError = "Niepoprawny lub nieaktywny klucz API (aktywacja nowego klucza może potrwać do 2 godzin na serwerach OpenWeather)";
+            } else if (error.message.includes("404")) {
+                userFriendlyError = "Nie znaleziono takiego miasta w bazie OpenWeather";
+            }
+            
+            return {
+                success: false,
+                error: userFriendlyError
+            };
         }
     } else {
         // No API key configured - simulate network request and return mock weather
