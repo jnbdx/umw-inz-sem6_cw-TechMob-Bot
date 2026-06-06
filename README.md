@@ -378,5 +378,27 @@ W celu podniesienia dynamiki i unikalności wizualnej interfejsu (efekt głębi 
 - **Trzepotanie skrzydeł**: Sylwetki ptaków (SVG) posiadają organiczną animację trzepotania skrzydeł (`@keyframes birdFlap` wykorzystujące szybkie, naprzemienne przekształcenia `scaleY` i `skewX`), co doskonale symuluje prawdziwy ruch ptaka w powietrzu.
 - **Dopasowanie kontrastu**: Zgodnie z wytycznymi WCAG, przezroczystość animacji w tle została ustawiona na bardzo niskim poziomie (`0.12` - `0.14` w trybie jasnym oraz `0.07` - `0.08` w trybie ciemnym), dzięki czemu ruch nie odciąga wzroku od czytania wiadomości i nie wpływa negatywnie na komfort użytkowania.
 
+## 8. Publikacja i hosting za pomocą GitHub Pages
+
+Ponieważ nasza aplikacja jest w pełni statycznym projektem (Pure HTML5/CSS3/Vanilla JS), idealnym, darmowym i najszybszym sposobem na jej publikację w sieci jest usługa **GitHub Pages**.
+
+### 8.1. Instrukcja wdrożenia krok po kroku
+Aby uruchomić aplikację online bezpośrednio z Twojego repozytorium GitHub, wykonaj poniższe czynności:
+1. Wejdź na stronę swojego repozytorium na GitHubie: `https://github.com/jnbdx/umw-inz-sem6_cw-TechMob-Bot`.
+2. Kliknij zakładkę **Settings** (Ustawienia) w górnym menu repozytorium.
+3. W menu bocznym po lewej stronie znajdź sekcję *Code and automation* i kliknij pozycję **Pages**.
+4. W sekcji **Build and deployment**:
+   - Upewnij się, że jako **Source** wybrane jest: `Deploy from a branch`.
+   - W sekcji **Branch** kliknij rozwijane menu (domyślnie `None`), wybierz branch **`main`**, a w polu wyboru katalogu pozostaw `/ (root)`.
+   - Kliknij przycisk **Save** (Zapisz).
+5. GitHub automatycznie uruchomi proces budowania i wdrażania (potrwa to około 1-2 minuty). Postęp możesz śledzić w zakładce **Actions** swojego repozytorium.
+6. Po zakończeniu procesu, na samej górze strony **Settings -> Pages** pojawi się zielony komunikat z linkiem do Twojej działającej aplikacji online, np.:
+   `https://jnbdx.github.io/umw-inz-sem6_cw-TechMob-Bot/`
+
+### 8.2. Ważne uwagi techniczne
+- **Obsługa modułów ES6**: GitHub Pages natywnie obsługuje i serwuje pliki JavaScript z poprawnym typem MIME (`application/javascript`), co oznacza, że modułowa struktura aplikacji (`type="module"`) działa bezbłędnie bez konieczności bundlowania (np. Webpackiem czy Vite).
+- **Ścieżki relatywne**: Wszystkie odnośniki do plików JS, CSS oraz zasobów w projekcie zostały zrealizowane jako ścieżki relatywne (np. `./js/chatUI.js` zamiast `/js/chatUI.js`). Zapobiega to błędom ładowania zasobów, gdy strona jest hostowana w podkatalogu repozytorium (co jest standardem dla GitHub Pages).
+
+
 
 
